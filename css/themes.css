@@ -1,0 +1,25 @@
+/* 主题变量和样式 */
+:root {
+    --bg: #F6F8FA;
+    --past: #1E88E5;
+    --future: #E6EEF6;
+    --now: #FFC857;
+    --gap: 2px;
+    --cell-size: 8px;
+}
+
+/* 暖色系：温柔岁月 */
+.theme-warm {
+    --bg: #FFF8F3;
+    --past: #D87C56;
+    --future: #F6EDEC;
+    --now: #FFC857;
+}
+
+/* 单色高对比：极简黑白 */
+.theme-monochrome {
+    --bg: #FFFFFF;
+    --past: #111827;
+    --future: #E6E7EB;
+    --now: #FFD166;
+}

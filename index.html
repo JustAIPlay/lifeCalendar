@@ -4,294 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>生命日历</title>
-    <style>
-        /* 默认配色：清新蓝调 */
-        :root {
-            --bg: #F6F8FA;
-            --past: #1E88E5;
-            --future: #E6EEF6;
-            --now: #FFC857;
-            --gap: 2px;
-            --cell-size: 8px;
-        }
-
-        /* 暖色系：温柔岁月 */
-        .theme-warm {
-            --bg: #FFF8F3;
-            --past: #D87C56;
-            --future: #F6EDEC;
-            --now: #FFC857;
-        }
-
-        /* 单色高对比：极简黑白 */
-        .theme-monochrome {
-            --bg: #FFFFFF;
-            --past: #111827;
-            --future: #E6E7EB;
-            --now: #FFD166;
-        }
-
-        body {
-            margin: 0;
-            padding: 20px;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: var(--bg);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .input-container {
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        .theme-selector {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .theme-option {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
-            border: 2px solid #e1e5e9;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 14px;
-            background-color: white;
-        }
-
-        .theme-option:hover {
-            border-color: var(--past);
-            transform: translateY(-1px);
-        }
-
-        .theme-option.active {
-            border-color: var(--past);
-            background-color: var(--past);
-            color: white;
-        }
-
-        .theme-preview {
-            display: flex;
-            gap: 2px;
-        }
-
-        .preview-color {
-            width: 12px;
-            height: 12px;
-            border-radius: 2px;
-        }
-
-        #birthDate {
-            padding: 10px;
-            font-size: 16px;
-            border: 2px solid #e1e5e9;
-            border-radius: 8px;
-            outline: none;
-            background-color: white;
-        }
-
-        #birthDate:focus {
-            border-color: var(--past);
-        }
-
-        .calendar-container {
-            display: grid;
-            grid-template-columns: repeat(52, var(--cell-size));
-            gap: var(--gap);
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .week {
-            width: var(--cell-size);
-            height: var(--cell-size);
-            background-color: var(--future);
-            border-radius: 1px;
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-
-        .week:hover {
-            transform: scale(1.3);
-            z-index: 10;
-            position: relative;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        }
-
-        .week.past {
-            background-color: var(--past);
-        }
-
-        .week.present {
-            background-color: var(--now);
-            transform: scale(1.1);
-            box-shadow: 0 0 0 2px rgba(255, 200, 87, 0.3);
-        }
-
-        .week.future {
-            background-color: var(--future);
-        }
-
-        .info {
-            margin-top: 20px;
-            text-align: center;
-            color: #666;
-            font-size: 14px;
-        }
-
-        .legend {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 15px;
-            font-size: 12px;
-            flex-wrap: wrap;
-        }
-
-        .card-generator {
-            margin-top: 30px;
-            text-align: center;
-        }
-
-        .generate-btn {
-            background-color: var(--past);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        .generate-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-        }
-
-        .generate-btn:active {
-            transform: translateY(0);
-        }
-
-        .card-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .card-modal.show {
-            display: flex;
-        }
-
-        .card-content {
-            background-color: white;
-            border-radius: 15px;
-            padding: 30px;
-            max-width: 90%;
-            max-height: 90%;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-
-        .card-preview {
-            margin: 20px 0;
-            text-align: center;
-        }
-
-        
-        .download-section {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        .download-btn {
-            background-color: var(--past);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .download-btn:hover {
-            transform: translateY(-1px);
-        }
-
-        .close-btn {
-            background-color: #666;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .close-btn:hover {
-            background-color: #555;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .legend-color {
-            width: 12px;
-            height: 12px;
-            border-radius: 2px;
-        }
-    </style>
+    
+    <!-- 模块化CSS -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/themes.css">
+    <link rel="stylesheet" href="css/calendar.css">
+    <link rel="stylesheet" href="css/ui.css">
+    <link rel="stylesheet" href="css/card.css">
+    <link rel="stylesheet" href="css/modal.css">
 </head>
 <body>
     <div class="input-container">
         <div class="theme-selector">
-            <div class="theme-option active" data-theme="default">
-                <div class="theme-preview">
-                    <div class="preview-color" style="background-color: #1E88E5;"></div>
-                    <div class="preview-color" style="background-color: #FFC857;"></div>
-                    <div class="preview-color" style="background-color: #E6EEF6;"></div>
-                </div>
-                <span>清新蓝调</span>
-            </div>
-            <div class="theme-option" data-theme="warm">
-                <div class="theme-preview">
-                    <div class="preview-color" style="background-color: #D87C56;"></div>
-                    <div class="preview-color" style="background-color: #FFC857;"></div>
-                    <div class="preview-color" style="background-color: #F6EDEC;"></div>
-                </div>
-                <span>温柔岁月</span>
-            </div>
-            <div class="theme-option" data-theme="monochrome">
-                <div class="theme-preview">
-                    <div class="preview-color" style="background-color: #111827;"></div>
-                    <div class="preview-color" style="background-color: #FFD166;"></div>
-                    <div class="preview-color" style="background-color: #E6E7EB;"></div>
-                </div>
-                <span>极简黑白</span>
-            </div>
+            <!-- 主题选择器将由ThemeManager动态生成 -->
         </div>
         <input type="date" id="birthDate" placeholder="选择出生日期">
     </div>
@@ -299,27 +24,30 @@
     <div class="calendar-container" id="calendar"></div>
     
     <div class="info">
-        <div>每个格子代表一周，总共90年（4680周）</div>
-        <div class="legend">
-            <div class="legend-item">
-                <div class="legend-color" style="background-color: var(--past);"></div>
-                <span>已度过</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background-color: var(--now);"></div>
-                <span>当前周</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background-color: var(--future);"></div>
-                <span>未来</span>
-            </div>
+        <div>已度过 0 周，剩余 4680 周</div>
+        <div>当前年龄：0 岁</div>
+        <div>生命进度：0%</div>
+    </div>
+    
+    <div class="legend">
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: var(--past);"></div>
+            <span>已度过</span>
         </div>
-        
-        <div class="card-generator">
-            <button class="generate-btn" onclick="openCardModal()">
-                🎨 生成生命卡片
-            </button>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: var(--now);"></div>
+            <span>现在</span>
         </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: var(--future);"></div>
+            <span>未来</span>
+        </div>
+    </div>
+    
+    <div class="card-generator">
+        <button class="generate-btn">
+            🎨 生成生命卡片
+        </button>
     </div>
 
     <!-- 卡片生成模态框 -->
@@ -331,349 +59,45 @@
             </div>
             
             <div class="download-section">
-                <button class="download-btn" onclick="downloadCard()">📥 下载PNG图片</button>
-                <button class="close-btn" onclick="closeCardModal()">关闭</button>
+                <button class="download-btn">📥 下载PNG图片</button>
+                <button class="close-btn">关闭</button>
             </div>
         </div>
     </div>
 
+    <!-- 模块化JavaScript -->
+    <script src="js/core/date-utils.js"></script>
+    <script src="js/core/calendar.js"></script>
+    <script src="js/theme/themes.js"></script>
+    <script src="js/theme/theme-manager.js"></script>
+    <script src="js/card/quotes.js"></script>
+    <script src="js/card/card-generator.js"></script>
+    <script src="js/ui/modal.js"></script>
+    <script src="js/ui/event-handlers.js"></script>
+    
     <script>
-        const birthDateInput = document.getElementById('birthDate');
-        const calendar = document.getElementById('calendar');
-        
-        const WEEKS_IN_YEAR = 52;
-        const YEARS = 90;
-        const TOTAL_WEEKS = WEEKS_IN_YEAR * YEARS;
-
-        function createCalendar() {
-            calendar.innerHTML = '';
+        // 应用初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化所有模块
+            Calendar.init();
+            ThemeManager.init();
+            CardGenerator.init();
+            Modal.init();
+            EventHandlers.init();
             
-            for (let i = 0; i < TOTAL_WEEKS; i++) {
-                const week = document.createElement('div');
-                week.className = 'week';
-                week.dataset.week = i;
-                calendar.appendChild(week);
-            }
-        }
-
-        function updateCalendar() {
-            const birthDate = new Date(birthDateInput.value);
-            if (!birthDateInput.value) return;
-
-            const today = new Date();
-            const birthTime = birthDate.getTime();
-            const todayTime = today.getTime();
+            // 监听主题变化
+            ThemeManager.onThemeChange(EventHandlers.handleThemeChange);
             
-            const weeksSinceBirth = Math.floor((todayTime - birthTime) / (1000 * 60 * 60 * 24 * 7));
-            
-            const weeks = document.querySelectorAll('.week');
-            weeks.forEach((week, index) => {
-                week.className = 'week';
-                if (index < weeksSinceBirth) {
-                    week.classList.add('past');
-                } else if (index === weeksSinceBirth) {
-                    week.classList.add('present');
-                } else {
-                    week.classList.add('future');
-                }
-            });
-        }
-
-        birthDateInput.addEventListener('change', updateCalendar);
-
-        // 主题切换功能
-        const themeOptions = document.querySelectorAll('.theme-option');
-        
-        function switchTheme(theme) {
-            // 移除所有主题类
-            document.body.classList.remove('theme-warm', 'theme-monochrome');
-            
-            // 添加新主题类
-            if (theme === 'warm') {
-                document.body.classList.add('theme-warm');
-            } else if (theme === 'monochrome') {
-                document.body.classList.add('theme-monochrome');
-            }
-            
-            // 更新活跃状态
-            themeOptions.forEach(option => {
-                option.classList.remove('active');
-                if (option.dataset.theme === theme) {
-                    option.classList.add('active');
+            // 监听模态框事件
+            document.addEventListener('modalOpen', function() {
+                // 模态框打开时的处理
+                const birthDate = new Date(document.getElementById('birthDate').value);
+                if (!isNaN(birthDate.getTime())) {
+                    Modal.updateCardPreview(birthDate);
                 }
             });
             
-            // 重新创建日历以应用新颜色
-            updateCalendar();
-            
-            // 如果卡片模态框是打开的，重新生成卡片预览
-            const modal = document.getElementById('cardModal');
-            if (modal.classList.contains('show')) {
-                generateCardPreview();
-            }
-        }
-        
-        themeOptions.forEach(option => {
-            option.addEventListener('click', () => {
-                switchTheme(option.dataset.theme);
-            });
-        });
-
-        // 初始化日历
-        createCalendar();
-        
-        // 设置默认日期为今天减去30年
-        const defaultDate = new Date();
-        defaultDate.setFullYear(defaultDate.getFullYear() - 30);
-        birthDateInput.value = defaultDate.toISOString().split('T')[0];
-        updateCalendar();
-
-        // 暖心文字库 - 从words.txt读取
-        const quotes = [
-            "生命是由一周一周的点滴，编织成的浩瀚星图。",
-            "时间不会停下脚步，但会在记忆里留下温柔的光。",
-            "每一个今天，都是未来岁月里最年轻的时刻。",
-            "不必追问生命的长度，珍惜每一寸正在流动的时光。",
-            "时间是最公平的老师，也是最温柔的雕刻师。",
-            "你走过的每一步，都在为生命涂抹独特的色彩。",
-            "岁月的意义，不在远方，而在每一个被认真度过的瞬间。",
-            "生命是一场旅程，目的地重要，沿途的风景更珍贵。",
-            "时间让我们明白：最耀眼的风景，常常在平凡里。",
-            "生命的宽度，由爱和热情来拓展。",
-            "未来是一张未完成的画布，笔在你手中。",
-            "岁月从不辜负认真生活的人。",
-            "时间的价值，不在长短，而在浓淡。",
-            "人生不是倒计时，而是点亮每一个属于你的当下。",
-            "当下这一刻，是我们真正能够把握的全部。",
-            "生命不必惊艳，但要真实而温热。",
-            "时间是最沉默的见证者，却记得你所有的努力。",
-            "每一次呼吸，都是生命赠予的答卷。",
-            "岁月温柔，它让失去成为懂得，让开始成为勇敢。",
-            "一生太短，短到来不及浪费，足够好好热爱。"
-        ];
-
-        let selectedQuote = quotes[0];
-
-        // 打开卡片模态框
-        function openCardModal() {
-            const modal = document.getElementById('cardModal');
-            modal.classList.add('show');
-            
-            // 随机选择暖心文字
-            selectedQuote = quotes[Math.floor(Math.random() * quotes.length)];
-            
-            // 生成卡片预览
-            generateCardPreview();
-        }
-
-        // 关闭卡片模态框
-        function closeCardModal() {
-            const modal = document.getElementById('cardModal');
-            modal.classList.remove('show');
-        }
-
-        // 获取当前主题颜色
-        function getCurrentThemeColors() {
-            // 检查当前应用的主题
-            let colors;
-            if (document.body.classList.contains('theme-warm')) {
-                colors = {
-                    bg: '#FFF8F3',
-                    past: '#D87C56',
-                    future: '#F6EDEC',
-                    now: '#FFC857'
-                };
-            } else if (document.body.classList.contains('theme-monochrome')) {
-                colors = {
-                    bg: '#FFFFFF',
-                    past: '#111827',
-                    future: '#E6E7EB',
-                    now: '#FFD166'
-                };
-            } else {
-                colors = {
-                    bg: '#F6F8FA',
-                    past: '#1E88E5',
-                    future: '#E6EEF6',
-                    now: '#FFC857'
-                };
-            }
-            return colors;
-        }
-
-        // 生成卡片预览
-        function generateCardPreview() {
-            const birthDate = new Date(birthDateInput.value);
-            const today = new Date();
-            const birthTime = birthDate.getTime();
-            const todayTime = today.getTime();
-            const weeksSinceBirth = Math.floor((todayTime - birthTime) / (1000 * 60 * 60 * 24 * 7));
-            
-            const colors = getCurrentThemeColors();
-            const svg = createSVGCard(birthDate, weeksSinceBirth, colors, selectedQuote);
-            
-            const preview = document.getElementById('cardPreview');
-            preview.innerHTML = svg;
-        }
-
-        // 创建SVG卡片
-        function createSVGCard(birthDate, weeksLived, colors, quote) {
-            const width = 800;
-            const height = 500;
-            const totalWeeks = 4680;
-            const percentage = ((weeksLived / totalWeeks) * 100).toFixed(1);
-
-            // 缩略格子图设置
-            const cellSize = 3;
-            const gap = 1;
-            const cols = 52;
-            const rows = 90;
-            const gridWidth = cols * (cellSize + gap);
-            const gridHeight = rows * (cellSize + gap);
-            const startX = (width - gridWidth) / 2;
-            const startY = 70;
-
-            let svg = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">`;
-            
-            // 背景
-            svg += `<rect width="${width}" height="${height}" fill="${colors.bg}"/>`;
-            
-            // 标题
-            svg += `<text x="${width/2}" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="${colors.past}">我的生命日历</text>`;
-            svg += `<text x="${width/2}" y="60" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="${colors.past}">已度过 ${percentage}%</text>`;
-            
-            // 绘制格子
-            for (let row = 0; row < rows; row++) {
-                for (let col = 0; col < cols; col++) {
-                    const weekIndex = row * cols + col;
-                    const x = startX + col * (cellSize + gap);
-                    const y = startY + row * (cellSize + gap);
-                    
-                    let color = colors.future;
-                    if (weekIndex < weeksLived) {
-                        color = colors.past;
-                    } else if (weekIndex === weeksLived) {
-                        color = colors.now;
-                    }
-                    
-                    svg += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" fill="${color}" rx="0.5"/>`;
-                }
-            }
-            
-            // 暖心文字 - 在卡片下方展示
-            const quoteY = startY + gridHeight + 50;
-            svg += `<text x="${width/2}" y="${quoteY}" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-style="italic" fill="${colors.past}">${quote}</text>`;
-            
-            svg += `</svg>`;
-            
-            return svg;
-        }
-
-        // 下载卡片为PNG - 使用Canvas直接绘制
-        function downloadCard() {
-            const birthDate = new Date(birthDateInput.value);
-            const today = new Date();
-            const birthTime = birthDate.getTime();
-            const todayTime = today.getTime();
-            const weeksLived = Math.floor((todayTime - birthTime) / (1000 * 60 * 60 * 24 * 7));
-            
-            const colors = getCurrentThemeColors();
-            const quote = selectedQuote;
-            
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = 800;
-            canvas.height = 500;
-            
-            // 绘制背景
-            ctx.fillStyle = colors.bg;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // 计算参数
-            const totalWeeks = 4680;
-            const percentage = ((weeksLived / totalWeeks) * 100).toFixed(1);
-            const cellSize = 3;
-            const gap = 1;
-            const cols = 52;
-            const rows = 90;
-            const gridWidth = cols * (cellSize + gap);
-            const gridHeight = rows * (cellSize + gap);
-            const startX = (canvas.width - gridWidth) / 2;
-            const startY = 70;
-            
-            // 绘制标题
-            ctx.fillStyle = colors.past;
-            ctx.font = 'bold 22px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText('我的生命日历', canvas.width / 2, 35);
-            
-            ctx.font = '16px Arial';
-            ctx.fillText(`已度过 ${percentage}%`, canvas.width / 2, 60);
-            
-            // 绘制格子
-            for (let row = 0; row < rows; row++) {
-                for (let col = 0; col < cols; col++) {
-                    const weekIndex = row * cols + col;
-                    const x = startX + col * (cellSize + gap);
-                    const y = startY + row * (cellSize + gap);
-                    
-                    let color = colors.future;
-                    if (weekIndex < weeksLived) {
-                        color = colors.past;
-                    } else if (weekIndex === weeksLived) {
-                        color = colors.now;
-                    }
-                    
-                    ctx.fillStyle = color;
-                    ctx.fillRect(x, y, cellSize, cellSize);
-                }
-            }
-            
-            // 绘制暖心文字
-            ctx.fillStyle = colors.past;
-            ctx.font = 'italic 16px Arial';
-            ctx.textAlign = 'center';
-            const quoteY = startY + gridHeight + 50;
-            
-            // 处理文字换行
-            const maxWidth = 700;
-            const words = quote.split('');
-            let line = '';
-            let lineY = quoteY;
-            
-            for (let i = 0; i < words.length; i++) {
-                const testLine = line + words[i];
-                const metrics = ctx.measureText(testLine);
-                const testWidth = metrics.width;
-                
-                if (testWidth > maxWidth && i > 0) {
-                    ctx.fillText(line, canvas.width / 2, lineY);
-                    line = words[i];
-                    lineY += 20;
-                } else {
-                    line = testLine;
-                }
-            }
-            ctx.fillText(line, canvas.width / 2, lineY);
-            
-            // 下载图片
-            canvas.toBlob(function(blob) {
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `life-calendar-${Date.now()}.png`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            }, 'image/png');
-        }
-
-        // 点击模态框外部关闭
-        document.getElementById('cardModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeCardModal();
-            }
+            console.log('生命日历模块化版本初始化完成');
         });
     </script>
 </body>
